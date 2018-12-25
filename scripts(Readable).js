@@ -97,7 +97,7 @@ function newText(input, event, isRed, oldToDo){
 				localStorageList = localStorageList.map(item => JSON.parse(item));
 				//Merge the LS list with savedToDoList
 				savedToDoList = savedToDoList.concat(localStorageList);
-				savedToDoList.forEach(function(toDo, i){
+				savedToDoList.forEach(function(toDo){
 					//If todo matches with previous todo
 					if(toDo == `<div class="todoDiv">${toDoDiv.html()}</div>`){
 						//Replace text with new text
@@ -117,7 +117,7 @@ function newText(input, event, isRed, oldToDo){
 				localStorageList = localStorageList.map(item => JSON.parse(item));
 				//Merge the LS list with savedToDoList
 				savedToDoList = savedToDoList.concat(localStorageList);
-				savedToDoList.forEach(function(toDo, i){
+				savedToDoList.forEach(function(toDo){
 					//If todo matches with previous todo
 					if(toDo == `<div class="todoDiv">${oldToDo}</div>`){
 						//Replace with new todo
@@ -207,10 +207,29 @@ function initListeners(){
 		arrowDown($(this));
 	});
 	//Mark To-Do as important
-	$("ul").on("click", ".todoDiv li .details .fa-bell", function(){
-		$(this).toggleClass("red");
-		$(this).parent().prev().prev().toggleClass("red");
-		detailsText($(this)).toggleClass("red-bg");
+	$("ul").on("click", ".todoDiv li .details .fa-bell", function(e){
+		let toDoDiv = $(this).closest(".todoDiv").html();
+		let savedToDoList =[];
+		//Split the string in LS into 2 or more
+		let localStorageList = localStorage.getItem("savedToDos").split(",");
+		//Parse every item of LS list separately(required because JSON gives error without spliting first)
+		localStorageList = localStorageList.map(item => JSON.parse(item));
+		//Merge the LS list with savedToDoList
+		savedToDoList = savedToDoList.concat(localStorageList);
+		savedToDoList.forEach(function(toDo){
+			//If todo matches with previous todo
+			if(toDo == `<div class="todoDiv">${toDoDiv}</div>`){
+				//Replace with new todo
+				$(e.target).toggleClass("red");
+				$(e.target).parent().prev().prev().toggleClass("red");
+				detailsText($(e.target)).toggleClass("red-bg");
+				let newToDoDiv = $(e.target).closest(".todoDiv").html()
+				//Now toDoDiv refers to the updated toDo
+				savedToDoList[savedToDoList.indexOf(toDo)] = `<div class="todoDiv">${newToDoDiv}</div>` ;
+				//Update localstorage
+				localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+			}
+		});
 	});
 	//Register todoInput
 	$("#todoInput").keypress(function(event){
