@@ -100,10 +100,10 @@ function newText(input, event, isRed, oldToDo){
 				savedToDoList.forEach(function(toDo, i){
 					//If todo matches with previous todo
 					if(toDo == `<div class="todoDiv">${toDoDiv.html()}</div>`){
-						//Replace with new todo
+						//Replace text with new text
 						input.replaceWith("<span class=\"text red\">" + newText + "</span>");
 						//Now toDoDiv refers to the updated toDo
-						savedToDoList.replace(toDo, `<div class="todoDiv">${toDoDiv.html()}</div>`);
+						savedToDoList[savedToDoList.indexOf(toDo)] = `<div class="todoDiv">${toDoDiv.html()}</div>` ;
 						//Update localstorage
 						localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
 					}
