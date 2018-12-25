@@ -135,10 +135,21 @@ function initListeners(){
 	});
 	//Delete To Do and detailsText
 	$("ul").on("click", ".delete", function(){
+		let button = $(this);
+		let savedToDoList =[];
+		//Split the string in LS into 2 or more
+		let localStorageList = localStorage.getItem("savedToDos").split(",");
+		//Parse every item of LS list separately(required because JSON gives error without spliting first)
+		localStorageList = localStorageList.map(item => JSON.parse(item));
+		//Merge the LS list with savedToDoList
+		savedToDoList = savedToDoList.concat(localStorageList);
 		savedToDoList.forEach(function(toDo, i){
-			if(toDo === $(".delete").nearest.innerHTML){
+			//If todo matches with todo on list
+			if(toDo == `<div class="todoDiv">${button.closest(".todoDiv").html()}</div>`){
+				//Splice todo off of list
 				savedToDoList.splice(i, 1);
-				localStorage.setItem("savedToDos", savedToDoList);
+				//Update localstorage
+				localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
 			}
 		});
 		remove($(this));
