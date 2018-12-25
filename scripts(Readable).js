@@ -80,19 +80,54 @@ function loadSavedToDos(){
 		let localStorageList = localStorage.getItem("savedToDos").split(",");
 		localStorageList = localStorageList.map(item => JSON.parse(item));
 		savedToDoList.push(localStorageList);
-		console.log(localStorageList);
 		savedToDoList.forEach(toDo => $("ul").append(toDo));
 	}
 }
-function newText(input, event, isRed){
+function newText(input, event, isRed, oldToDo){
 	if(event.which == 13){
 		let newText = input.val();
 		//If text is empty don't allow edit
 		if(newText != ""){
 			if(isRed){
-				input.replaceWith("<span class=\"text red\">" + newText + "</span>");
+				let toDoDiv = input.closest(".todoDiv");
+				let savedToDoList =[];
+				//Split the string in LS into 2 or more
+				let localStorageList = localStorage.getItem("savedToDos").split(",");
+				//Parse every item of LS list separately(required because JSON gives error without spliting first)
+				localStorageList = localStorageList.map(item => JSON.parse(item));
+				//Merge the LS list with savedToDoList
+				savedToDoList = savedToDoList.concat(localStorageList);
+				savedToDoList.forEach(function(toDo, i){
+					//If todo matches with previous todo
+					if(toDo == `<div class="todoDiv">${toDoDiv.html()}</div>`){
+						//Replace with new todo
+						input.replaceWith("<span class=\"text red\">" + newText + "</span>");
+						//Now toDoDiv refers to the updated toDo
+						savedToDoList.replace(toDo, `<div class="todoDiv">${toDoDiv.html()}</div>`);
+						//Update localstorage
+						localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+					}
+				});
 			} else {
-				input.replaceWith("<span class=\"text\">" + newText + "</span>");
+				let toDoDiv = input.closest(".todoDiv");
+				let savedToDoList =[];
+				//Split the string in LS into 2 or more
+				let localStorageList = localStorage.getItem("savedToDos").split(",");
+				//Parse every item of LS list separately(required because JSON gives error without spliting first)
+				localStorageList = localStorageList.map(item => JSON.parse(item));
+				//Merge the LS list with savedToDoList
+				savedToDoList = savedToDoList.concat(localStorageList);
+				savedToDoList.forEach(function(toDo, i){
+					//If todo matches with previous todo
+					if(toDo == `<div class="todoDiv">${oldToDo}</div>`){
+						//Replace with new todo
+						input.replaceWith("<span class=\"text\">" + newText + "</span>");
+						//Now toDoDiv refers to the updated toDo
+						savedToDoList[savedToDoList.indexOf(toDo)] = `<div class="todoDiv">${toDoDiv.html()}</div>` ;
+						//Update localstorage
+						localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+					}
+				});
 			}
 		}
 	}
@@ -110,6 +145,7 @@ function inputCreate(text, isRed, target){
 }
 function editText(){
 	$("ul").on("click", ".todoDiv li .fa-edit", function(){
+		let oldToDo = $(this).closest(".todoDiv").html();
 		let text = $(this).prev().text();
 		let isRed;
 		//Create input and get isRed
@@ -124,7 +160,7 @@ function editText(){
 		});
 		$(this).prev().keypress(function(event){
 			//Replace text
-			newText($(this), event, isRed);
+			newText($(this), event, isRed, oldToDo);
 		});
 	});
 }
