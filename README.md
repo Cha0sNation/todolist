@@ -1,2 +1,2 @@
-# todolist
+# ToDo List
 A simple To-Do List
