@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>To-Do List</title>
+		<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+		<link href="https://fonts.googleapis.com/css?family=Roboto:400" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css">
+		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+		<script type="text/javascript" src="js/jquery.datetimepicker.full.min.js"></script>
+		<script type="text/javascript" src="js/scripts.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<h1>To-Do List <i class="fa fa-plus"></i></h1>
+			<div id="hide">
+				<div class="labelCont">
+					<p>
+						<span id="taskName">To-Do Name:</span>
+						<span id="finishDate">Finish by:</span>
+					</p>
+				</div>
+				<form>
+					<input type="text" placeholder="(Required)" id="todoInput" maxlength="45" required>
+					<input id="date" type="text" placeholder="(Required)" required>
+				</form>
+			</div>
+			<ul>
+			</ul>
+		</div>
+		<footer>Made by Thanas Pulaj @2018</footer>
+	</body>
+</html>

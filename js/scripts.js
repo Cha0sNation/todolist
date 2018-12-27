@@ -60,25 +60,22 @@ function storeToLocalStorage(toDo){
 		let savedToDoList =[];
 		//Split the string in LS into 2 or more
 		let localStorageList = localStorage.getItem("savedToDos").split(",");
-		//Parse every item of LS list separately(required because JSON gives error without spliting first)
-		localStorageList = localStorageList.map(item => JSON.parse(item));
 		//Merge the LS list with savedToDoList
-		savedToDoList = savedToDoList.concat(localStorageList);
+		savedToDoList = localStorage.getItem("savedToDos").split(",");
 		//Push new toDo to list
 		savedToDoList.push(toDo);
 		//Update LS with savedToDoList
-		localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+		localStorage.setItem("savedToDos", savedToDoList.map(toDo => toDo));
 	} else {
 		let savedToDoList = [];
 		savedToDoList.push(toDo);
-		localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+		localStorage.setItem("savedToDos", savedToDoList.map(toDo => toDo));
 	}
 }
 function loadSavedToDos(){
 	if(localStorage.getItem("savedToDos")){
 		let savedToDoList =[];
 		let localStorageList = localStorage.getItem("savedToDos").split(",");
-		localStorageList = localStorageList.map(item => JSON.parse(item));
 		savedToDoList.push(localStorageList);
 		savedToDoList.forEach(toDo => $("ul").append(toDo));
 	}
@@ -94,7 +91,7 @@ function newText(input, event, isRed, oldToDo){
 				//Split the string in LS into 2 or more
 				let localStorageList = localStorage.getItem("savedToDos").split(",");
 				//Parse every item of LS list separately(required because JSON gives error without spliting first)
-				localStorageList = localStorageList.map(item => JSON.parse(item));
+				savedToDoList = localStorage.getItem("savedToDos").split(",");
 				//Merge the LS list with savedToDoList
 				savedToDoList = savedToDoList.concat(localStorageList);
 				savedToDoList.forEach(function(toDo){
@@ -113,10 +110,8 @@ function newText(input, event, isRed, oldToDo){
 				let savedToDoList =[];
 				//Split the string in LS into 2 or more
 				let localStorageList = localStorage.getItem("savedToDos").split(",");
-				//Parse every item of LS list separately(required because JSON gives error without spliting first)
-				localStorageList = localStorageList.map(item => JSON.parse(item));
 				//Merge the LS list with savedToDoList
-				savedToDoList = savedToDoList.concat(localStorageList);
+				savedToDoList = localStorage.getItem("savedToDos").split(",");
 				savedToDoList.forEach(function(toDo){
 					//If todo matches with previous todo
 					if(toDo == `<div class="todoDiv">${oldToDo}</div>`){
@@ -125,7 +120,7 @@ function newText(input, event, isRed, oldToDo){
 						//Now toDoDiv refers to the updated toDo
 						savedToDoList[savedToDoList.indexOf(toDo)] = `<div class="todoDiv">${toDoDiv.html()}</div>` ;
 						//Update localstorage
-						localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+						localStorage.setItem("savedToDos", savedToDoList.map(toDo => toDo));
 					}
 				});
 			}
@@ -173,19 +168,14 @@ function initListeners(){
 	$("ul").on("click", ".delete", function(){
 		let button = $(this);
 		let savedToDoList =[];
-		//Split the string in LS into 2 or more
-		let localStorageList = localStorage.getItem("savedToDos").split(",");
-		//Parse every item of LS list separately(required because JSON gives error without spliting first)
-		localStorageList = localStorageList.map(item => JSON.parse(item));
-		//Merge the LS list with savedToDoList
-		savedToDoList = savedToDoList.concat(localStorageList);
+		savedToDoList = localStorage.getItem("savedToDos").split(",");
 		savedToDoList.forEach(function(toDo, i){
 			//If todo matches with todo on list
 			if(toDo == `<div class="todoDiv">${button.closest(".todoDiv").html()}</div>`){
 				//Splice todo off of list
 				savedToDoList.splice(i, 1);
 				//Update localstorage
-				localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+				localStorage.setItem("savedToDos", savedToDoList.map(toDo => toDo));
 			}
 		});
 		remove($(this));
@@ -212,10 +202,8 @@ function initListeners(){
 		let savedToDoList =[];
 		//Split the string in LS into 2 or more
 		let localStorageList = localStorage.getItem("savedToDos").split(",");
-		//Parse every item of LS list separately(required because JSON gives error without spliting first)
-		localStorageList = localStorageList.map(item => JSON.parse(item));
 		//Merge the LS list with savedToDoList
-		savedToDoList = savedToDoList.concat(localStorageList);
+		savedToDoList = localStorage.getItem("savedToDos").split(",");
 		savedToDoList.forEach(function(toDo){
 			//If todo matches with previous todo
 			if(toDo == `<div class="todoDiv">${toDoDiv}</div>`){
@@ -223,11 +211,11 @@ function initListeners(){
 				$(e.target).toggleClass("red");
 				$(e.target).parent().prev().prev().toggleClass("red");
 				detailsText($(e.target)).toggleClass("red-bg");
-				let newToDoDiv = $(e.target).closest(".todoDiv").html()
+				let newToDoDiv = $(e.target).closest(".todoDiv").html();
 				//Now toDoDiv refers to the updated toDo
 				savedToDoList[savedToDoList.indexOf(toDo)] = `<div class="todoDiv">${newToDoDiv}</div>` ;
 				//Update localstorage
-				localStorage.setItem("savedToDos", savedToDoList.map((toDo) => JSON.stringify(toDo)));
+				localStorage.setItem("savedToDos", savedToDoList.map(toDo => toDo));
 			}
 		});
 	});
