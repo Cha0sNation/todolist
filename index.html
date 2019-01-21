@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
+		<link rel="stylesheet" href="styles.css">
+		<script src="app.js" defer></script>
+		<title>TaskManager</title>
+	</head>
+	<body>
+		<nav>
+			<div class="nav-wrapper grey darken-4">
+				<a href="#" class="brand-logo center">TaskManager</a>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="card ">
+				<div id="create" class="row">
+					<form>
+						<div class="input-field col s12">
+							<label for="task-name">Task Name:</label>
+							<input type="text" id="task-name" class="col s6 validate" required>
+						</div>
+						<div class="input-field col s12">
+							<label for="task-description">Task Description:</label>
+							<textarea id="task-description" class="materialize-textarea validate" required></textarea>
+						</div>
+						<div class="input-field col s12">
+							<label for="task-date">Finish by:</label>
+							<input type="text" id="task-date" class="datepicker validate" required>
+						</div>
+						<button class="submit-btn btn-flat waves-effect col s12" type="submit">Add Task </button>
+					</form>
+				</div>
+				<ul id="task-list" class="collection">
+					<!-- <li class="collection-item row" id="task-2">
+						<span class="col s9">Water plants</span>
+						<button class="details-btn btn-flat col s3">Details</button>
+					</li>
+					<li class="collection-item row" id="task-2">
+						<span class="col s9">Feed dog</span>
+						<button class="details-btn btn-flat col s3">Details</button>
+					</li>
+					<li class="collection-item row" id="task-2">
+						<span class="col s9">Do homework</span>
+						<button class="details-btn btn-flat col s3">Details</button>
+					</li> -->
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>
