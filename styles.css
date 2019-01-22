@@ -15,6 +15,6 @@ input, textarea {
 .collection-item span {
 	line-height: 2rem;
 }
-.datepicker {
+.datepicker, .timepicker {
 	width: 88.5px !important;
 }

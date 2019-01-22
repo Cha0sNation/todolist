@@ -6,8 +6,8 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
 		<link rel="stylesheet" href="styles.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
 		<script src="app.js" defer></script>
 		<title>TaskManager</title>
 	</head>
@@ -30,8 +30,12 @@
 							<textarea id="task-description" class="materialize-textarea validate" required></textarea>
 						</div>
 						<div class="input-field col s12">
-							<label for="task-date">Finish by:</label>
+							<label for="task-date">Task (Date):</label>
 							<input type="text" id="task-date" class="datepicker validate" required>
+						</div>
+						<div class="input-field col s12">
+							<label for="task-time">Task (Time):</label>
+							<input type="text" id="task-time" class="timepicker validate">
 						</div>
 						<button class="submit-btn btn-flat waves-effect col s12" type="submit">Add Task </button>
 					</form>
