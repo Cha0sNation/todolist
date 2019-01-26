@@ -18,3 +18,6 @@ input, textarea {
 .datepicker, .timepicker {
 	width: 88.5px !important;
 }
+.modal-delete{
+	float: inline-start;
+}

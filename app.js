@@ -1,5 +1,38 @@
 // Storage Controller
 const StorageCtrl = (function() {
+	return {
+		getStoredTasks: function() {
+			if (localStorage.getItem("tasks")) {
+				return JSON.parse(localStorage.getItem("tasks"));
+			}
+			return [];
+		},
+		storeTask: function(task) {
+			let tasks = this.getStoredTasks();
+			tasks.push(task);
+			localStorage.setItem("tasks", JSON.stringify(tasks));
+		},
+		updateStoredTask: function(tasks, updatedTask) {
+			for (let task of tasks) {
+				if (task.id == updatedTask.id) {
+					task.name = updatedTask.name;
+					task.desc = updatedTask.desc;
+					task.time.general = updatedTask.time.general;
+					task.time.specific = updatedTask.time.specific;
+				}
+			}
+			localStorage.setItem("tasks", JSON.stringify(tasks));
+		},
+		deleteStoredTask: function(task) {
+			let tasks = this.getStoredTasks();
+			for (const [i, task] of tasks.entries()) {
+				if (task.id == tasks[i].id) {
+					tasks.splice(i, 1);
+					localStorage.setItem("tasks", JSON.stringify(tasks));
+				}
+			}
+		}
+	};
 
 })();
 
@@ -12,45 +45,27 @@ const TaskCtrl = (function() {
 	};
 	let data = {
 		tasks: [
-			{
-				id: 0,
-				name: "Task 1",
-				desc: "Task 1 desc",
-				time: {
-					general: "22/01/2019",
-					specific: "19:20"
-				}
-			},
-			{
-				id: 1,
-				name: "Task 2",
-				desc: "Task  desc",
-				time: {
-					general: "23/01/2019",
-					specific: "05:30"
-				}
-			},
-			{
-				id: 2,
-				name: "Task 3",
-				desc: "Task 3 desc",
-				time: {
-					general: "24/01/2019",
-					specific: "12:24"
-				}
-			}
 		],
 		currentTask: null
 	};
 	return {
 		addTask: function(task) {
 			const newTask = new Task(task.name, task.desc, task.time);
-			if (data.tasks.length == 0) {
-				newTask.id = 0;
-			} else {
-				newTask.id = data.tasks.length;
-			}
 			data.tasks.push(newTask);
+		},
+		deleteTask: function(id) {
+			for (const [i, task] of data.tasks.entries()) {
+				if (id == task.id) {
+					data.tasks.splice(i, 1);
+				}
+			}
+		},
+		generateID: function() {
+			if (data.tasks.length == 0) {
+				return 0;
+			} else {
+				return data.tasks.length;
+			}
 		},
 		getTasks: function() {
 			return data.tasks;
@@ -77,6 +92,9 @@ const TaskCtrl = (function() {
 		},
 		getCurrentTask: function() {
 			return data.currentTask;
+		},
+		setTasks: function(tasks) {
+			data.tasks = tasks;
 		}
 	};
 })();
@@ -93,8 +111,8 @@ const UICtrl = (function() {
 		submitForm: "#submit-form",
 		editForm: "#edit-form",
 		taskList: "#task-list",
-		modalTrigger: ".modal-trigger",
-		modalEdit: ".modal-edit"
+		modalEdit: ".modal-edit",
+		modalDelete: ".modal-delete"
 	};
 	const timeDifference = function(userTime) {
 		// Split the date we get from the user
@@ -186,6 +204,11 @@ const UICtrl = (function() {
 		updateTaskList: function(tasks) {
 			const taskList = document.querySelector(UISelectors.taskList);
 			taskList.innerHTML = "";
+			if (tasks.length == 0) {
+				taskList.style.display = "none";
+			} else {
+				taskList.style.display = "block";
+			}
 			for (const task of tasks) {
 				taskList.innerHTML +=
 					`
@@ -201,6 +224,7 @@ const UICtrl = (function() {
 							<em>${timeDifference(task.time)}</em>
 						</div>
 						<div class="modal-footer row">
+							<button href="#!" class="modal-delete waves-effect waves-red btn-flat pull-s12">Delete</button>
 							<button href="#!" class="modal-edit waves-effect waves-yellow btn-flat">Edit</button>
 							<button href="#!" class="modal-close waves-effect btn-flat">Close</button>
 						</div>
@@ -261,7 +285,9 @@ const AppCtrl = (function(UICtrl, TaskCtrl, StorageCtrl) {
 				// Find task by id and set currentTask to that task
 				TaskCtrl.setCurrentTask(TaskCtrl.findTask(id));
 				const task = TaskCtrl.getCurrentTask();
-				document.querySelector(UISelectors.submitForm).id = "edit-form";
+				if (document.querySelector(UISelectors.submitForm)) {
+					document.querySelector(UISelectors.submitForm).id = "edit-form";
+				}
 				document.querySelector(UISelectors.taskName).value = task.name;
 				document.querySelector(UISelectors.taskDesc).value = task.desc;
 				document.querySelector(UISelectors.taskDate).value = task.time.general;
@@ -274,28 +300,44 @@ const AppCtrl = (function(UICtrl, TaskCtrl, StorageCtrl) {
 				backButton.className = "back-btn btn-flat waves-effect col s6";
 				backButton.id = "back-btn";
 				backButton.innerText = "Back";
-				document.querySelector("form").after(document.querySelector(UISelectors.submitBtn), backButton);
+				if (!document.querySelector("#back-btn")) {
+					document.querySelector("form").after(document.querySelector(UISelectors.submitBtn), backButton);
+				}
 
 				/* eslint-disable-next-line no-undef*/
 				M.updateTextFields();
 				button.nextElementSibling.click();
 			});
 		}
+		const deleteButtons = document.querySelectorAll(UISelectors.modalDelete);
+		for (const button of deleteButtons) {
+			button.addEventListener("click", () => {
+				const id = button.parentElement.parentElement.id.slice(6);
+				TaskCtrl.deleteTask(id);
+				StorageCtrl.deleteStoredTask(TaskCtrl.findTask(id));
+				UICtrl.loadTasks();
+			});
+		}
 		document.querySelector(".datepicker").addEventListener("focus", (e) => {
-			/* eslint-disable-next-line no-undef*/
-			var instance = M.Datepicker.getInstance(e.target);
-			instance.open();
+			if (e.target.value == "") {
+				/* eslint-disable-next-line no-undef*/
+				var instance = M.Datepicker.getInstance(e.target);
+				instance.open();
+			}
 		});
 		document.querySelector(".timepicker").addEventListener("focus", (e) => {
-			/* eslint-disable-next-line no-undef*/
-			var instance = M.Timepicker.getInstance(e.target);
-			instance.open();
+			if (e.target.value == "") {
+				/* eslint-disable-next-line no-undef*/
+				var instance = M.Timepicker.getInstance(e.target);
+				instance.open();
+			}
 		});
 	};
 	// Submit New Task
 	const submitTask = function() {
 		// Create task from input values
 		const task = {
+			id: TaskCtrl.generateID(),
 			name: document.querySelector(UISelectors.taskName).value,
 			desc: document.querySelector(UISelectors.taskDesc).value,
 			time: {
@@ -305,11 +347,11 @@ const AppCtrl = (function(UICtrl, TaskCtrl, StorageCtrl) {
 		};
 		// Add task to tasks array
 		TaskCtrl.addTask(task);
+		StorageCtrl.storeTask(task);
 		UICtrl.loadTasks();
 		UICtrl.initModals();
 	};
 	const editTask = function() {
-		document.querySelector(UISelectors.editForm).id = "submit-form";
 		const task = {
 			name: document.querySelector(UISelectors.taskName).value,
 			desc: document.querySelector(UISelectors.taskDesc).value,
@@ -319,7 +361,11 @@ const AppCtrl = (function(UICtrl, TaskCtrl, StorageCtrl) {
 			}
 		};
 		TaskCtrl.updateTask(TaskCtrl.getCurrentTask().id, task);
-		// Add task to tasks array
+		StorageCtrl.updateStoredTask(TaskCtrl.getTasks(), task);
+		document.querySelector(UISelectors.editForm).id = "submit-form";
+		document.querySelector(UISelectors.submitBtn).className = "submit-btn btn-flat waves-effect col s12";
+		document.querySelector(UISelectors.submitBtn).innerText = "Add Task";
+		document.querySelector("#back-btn").parentNode.removeChild(document.querySelector("#back-btn"));
 		UICtrl.loadTasks();
 		UICtrl.initModals();
 	};
@@ -328,6 +374,7 @@ const AppCtrl = (function(UICtrl, TaskCtrl, StorageCtrl) {
 			UICtrl.clearForm();
 			UICtrl.initDatePicker();
 			UICtrl.initTimePicker();
+			TaskCtrl.setTasks(StorageCtrl.getStoredTasks());
 			UICtrl.loadTasks();
 			UICtrl.initModals();
 
