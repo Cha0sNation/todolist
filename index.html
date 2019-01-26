@@ -20,24 +20,24 @@
 		<div class="container">
 			<div class="card ">
 				<div id="create" class="row">
-					<form>
+					<form id="submit-form">
 						<div class="input-field col s12">
 							<label for="task-name">Task Name:</label>
-							<input type="text" id="task-name" class="col s6 validate" required>
+							<input type="text" id="task-name" class="col s6 " required>
 						</div>
 						<div class="input-field col s12">
 							<label for="task-description">Task Description:</label>
-							<textarea id="task-description" class="materialize-textarea validate" required></textarea>
+							<textarea id="task-description" class="materialize-textarea " required></textarea>
 						</div>
 						<div class="input-field col s12">
 							<label for="task-date">Task (Date):</label>
-							<input type="text" id="task-date" class="datepicker validate" required>
+							<input type="text" id="task-date" class="datepicker " required>
 						</div>
 						<div class="input-field col s12">
 							<label for="task-time">Task (Time):</label>
-							<input type="text" id="task-time" class="timepicker validate">
+							<input type="text" id="task-time" class="timepicker ">
 						</div>
-						<button class="submit-btn btn-flat waves-effect col s12" type="submit">Add Task </button>
+						<button class="submit-btn btn-flat waves-effect col s12" type="submit">Add Task</button>
 					</form>
 				</div>
 				<ul id="task-list" class="collection">
